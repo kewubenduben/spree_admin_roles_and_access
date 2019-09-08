@@ -139,9 +139,14 @@ namespace :spree_roles do
 
       admin_permission = make_permission('can-manage-all', 0)
       admin_permission_set = make_permission_set([admin_permission], 'admin', 'Can manage everything')
-      admin_role = create_role_with_permission_sets([admin_permission_set], 'admin')
-      admin_role.admin_accessible = true
-      admin_role.save!
+
+      # We copy all roles from ActiveAdminRole
+      ::ActiveAdminRole.config.roles.each do |k, _v|
+        puts "Copying role #{k} from ActiveAdminRole to Spree::Role"
+        admin_role = create_role_with_permission_sets([admin_permission_set], k)
+        admin_role.admin_accessible = true
+        admin_role.save!
+      end
     end
 
     desc "Create utility permission sets for common store admin tasks"
@@ -215,7 +220,7 @@ namespace :spree_roles do
             [:admin, :read], Spree::Product,
             [:admin, :read], Spree::Variant,
             [:admin, :read], Spree::ReimbursementType,
-            [:admin, :read, :edit, :new], Spree::User,
+            [:admin, :read, :edit, :new], Spree.user_class,
             [:admin, :manage], Spree::Order,
             [:admin, :manage], Spree::Payment,
             [:admin, :manage], Spree::Shipment,
@@ -326,7 +331,7 @@ namespace :spree_roles do
             [:admin], Spree::Store,
             [:admin, :manage], Spree::StoreCreditCategory,
             [:admin, :manage], Spree::StoreCredit,
-            [:admin, :read, :edit], Spree::User
+            [:admin, :read, :edit], Spree.user_class
           ]
         ),
         "Store Credit Managment",

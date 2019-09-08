@@ -11,9 +11,9 @@ module Spree
       alias_action :index, to: :read
       alias_action :delete, to: :destroy
 
-      user ||= Spree.user_class.new
+      user ||= AdminUser.new
 
-      user_roles(user).map(&:permissions).flatten.uniq.map { |permission| permission.ability(self, user) }
+      user_spree_roles(user).map(&:permissions).flatten.uniq.map { |permission| permission.ability(self, user) }
 
       Ability.abilities.each do |clazz|
         ability = clazz.send(:new, user)
@@ -21,8 +21,8 @@ module Spree
       end
     end
 
-    def user_roles(user)
-      (roles = user.roles.includes(:permissions)).empty? ? Spree::Role.default_role.includes(:permissions) : roles
+    def user_spree_roles(user)
+      (roles = user.spree_roles.includes(:permissions)).empty? ? Spree::Role.default_role.includes(:permissions) : roles
     end
   end
 end

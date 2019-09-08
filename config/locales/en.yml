@@ -15,6 +15,7 @@ en:
     permissions: Permissions
     save_changes: Save Changes
     new_permission: New Permission
+    permission_sets: Permission Sets
     permission_set_name: Name
     permission_set_description: Description
     permission_set_display_permission: Display Permission
